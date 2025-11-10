@@ -94,12 +94,12 @@ EOF
 
   repair_flannel = <<-SHELL
     echo "repair flannels on node"
-    mkdir -p /opt/cni/bin
-    mkdir -p /usr/lib/cni
-    curl -L https://github.com/containernetworking/plugins/releases/download/v1.2.0/cni-plugins-linux-amd64-v1.2.0.tgz | tar -C /opt/cni/bin -xz
-    ln -s /opt/cni/bin/* /usr/lib/cni/
-    systemctl restart containerd
-    systemctl restart kubelet
+    sudo mkdir -p /opt/cni/bin
+    sudo mkdir -p /usr/lib/cni
+    sudo curl -L https://github.com/containernetworking/plugins/releases/download/v1.2.0/cni-plugins-linux-amd64-v1.2.0.tgz | tar -C /opt/cni/bin -xz
+    sudo ln -s /opt/cni/bin/* /usr/lib/cni/
+    sudo systemctl restart containerd
+    sudo systemctl restart kubelet
   SHELL
   # === VM 1 ===
   config.vm.define "primary-node" do |node|
