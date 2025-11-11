@@ -1,15 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webapp-deployment
-  namespace: webapp-deployment
+  name: api-gateway-deployment
+  namespace: fleetman
   labels:
-    app: webapp
+    app: api-gateway
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: webapp
+      app: api-gateway
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -18,10 +18,13 @@ spec:
   template:
     metadata:
       labels:
-        app: webapp
+        app: api-gateway
     spec:
       containers:
-      - name: webapp-container
-        image: supinfo4kube/web-app:1.0.0-dockercompose
+      - name: api-gateway-container
+        image: supinfo4kube/api-gateway:1.0.1
         ports:
         - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: production-microservice

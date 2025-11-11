@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: fleetman-position-simulator
+  name: fleetman-position-simulator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleetman-position-simulator
+  template:
+    metadata:
+      labels:
+        app: fleetman-position-simulator
+    spec:
+      containers:
+        - env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: local-microservice
+          image: supinfo4kube/position-simulator:1.0.1
+          name: fleetman-position-simulator
+      restartPolicy: Always

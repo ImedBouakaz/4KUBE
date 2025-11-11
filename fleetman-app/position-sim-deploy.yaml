@@ -2,19 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: position-sim-deployment
-  namespace: position-sim-deployment
+  namespace: fleetman
   labels:
     app: position-sim
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: position-sim
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 2
-    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -28,4 +23,4 @@ spec:
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
-        restartPolicy: Always
+        restartPolicy: On-failure

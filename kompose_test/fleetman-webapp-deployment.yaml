@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: fleetman-webapp
+  name: fleetman-webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleetman-webapp
+  template:
+    metadata:
+      labels:
+        app: fleetman-webapp
+    spec:
+      containers:
+        - image: supinfo4kube/web-app:1.0.0
+          name: fleetman-webapp
+          ports:
+            - containerPort: 80
+              protocol: TCP
+      restartPolicy: Always

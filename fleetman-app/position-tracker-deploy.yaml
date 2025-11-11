@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: position-tracker-deployment
+  namespace: fleetman
+  labels:
+    app: position-tracker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: position-tracker
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 2
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: position-tracker
+    spec:
+      containers:
+      - name: position-tracker-container
+        image: supinfo4kube/position-tracker:1.0.1
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: production-microservice
+        restartPolicy: Always

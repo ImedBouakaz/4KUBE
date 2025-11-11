@@ -24,6 +24,7 @@ Vagrant.configure("2") do |config|
     echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.34/deb/ /" > /etc/apt/sources.list.d/kubernetes.list
     apt-get update -y
     apt-get install -y containerd kubelet kubeadm kubectl libglib2.0-0
+    sudo apt install -y qemu-user-static binfmt-support
 
     # réseau
     echo "Loading kernel modules..."
@@ -80,6 +81,7 @@ EOF
     sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
     systemctl restart containerd
     systemctl restart kubelet
+    kubectl delete pod -n kube-flannel --all
   SHELL
 
   kubeadm_join = <<-SHELL
@@ -98,8 +100,8 @@ EOF
     sudo mkdir -p /usr/lib/cni
     sudo curl -L https://github.com/containernetworking/plugins/releases/download/v1.2.0/cni-plugins-linux-amd64-v1.2.0.tgz | tar -C /opt/cni/bin -xz
     sudo ln -s /opt/cni/bin/* /usr/lib/cni/
-    sudo systemctl restart containerd
-    sudo systemctl restart kubelet
+    systemctl restart kubelet
+    systemctl restart containerd
   SHELL
   # === VM 1 ===
   config.vm.define "primary-node" do |node|
