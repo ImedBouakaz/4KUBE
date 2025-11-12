@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: position-tracker-network-policy
+  namespace: fleetman
+spec:
+  podSelector:
+    matchLabels:
+      app: position-tracker
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api-gateway
+    ports:
+    - protocol: TCP
+      port: 8080
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: trucks-queue
+    ports:
+    - protocol: TCP
+      port: 8161
+    - protocol: TCP
+      port: 61616
+  - to:
+    - podSelector:
+        matchLabels:
+          app: mongo
+    ports:
+    - protocol: TCP
+      port: 27017
+  - to:  # DNS resolution
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53

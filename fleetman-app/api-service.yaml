@@ -6,8 +6,8 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app.kubernetes.io/name: api-gateway-deployment
+    app: api-gateway
   ports:
     - protocol: TCP
       port: 8080
-      targetPort: 30080
+      targetPort: 8080
