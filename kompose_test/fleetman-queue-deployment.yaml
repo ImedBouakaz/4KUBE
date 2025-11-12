@@ -19,7 +19,8 @@ spec:
           name: fleetman-queue
           ports:
             - containerPort: 8161
-              protocol: TCP
             - containerPort: 61616
-              protocol: TCP
+          env:
+            - name: ACTIVEMQ_OPTS
+              value: "-Djava.rmi.server.hostname=0.0.0.0 -Dactivemq.hostname=0.0.0.0"
       restartPolicy: Always

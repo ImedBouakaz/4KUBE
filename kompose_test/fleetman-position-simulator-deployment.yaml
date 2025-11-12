@@ -17,7 +17,7 @@ spec:
       containers:
         - env:
             - name: SPRING_PROFILES_ACTIVE
-              value: local-microservice
+              value: production-microservice
           image: supinfo4kube/position-simulator:1.0.1
           name: fleetman-position-simulator
       restartPolicy: Always

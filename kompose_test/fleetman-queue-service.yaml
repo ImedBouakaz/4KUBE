@@ -1,16 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: fleetman-queue
   name: fleetman-queue
 spec:
-  ports:
-    - name: "8161"
-      port: 8161
-      targetPort: 8161
-    - name: "61616"
-      port: 61616
-      targetPort: 61616
   selector:
     app: fleetman-queue
+  type: ClusterIP
+  ports:
+    - name: "broker"
+      port: 61616
+      targetPort: 61616
+    - name: "admin"
+      port: 8161
+      targetPort: 8161

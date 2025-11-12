@@ -24,4 +24,4 @@ spec:
       - name: webapp-container
         image: supinfo4kube/web-app:1.0.0
         ports:
-        - containerPort: 8080
+        - containerPort: 80
