@@ -8,6 +8,6 @@ spec:
     app: position-tracker
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 30010
+      port: 30010
+      targetPort: 8080
   type: ClusterIP
