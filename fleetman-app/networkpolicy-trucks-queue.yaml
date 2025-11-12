@@ -1,0 +1,48 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: trucks-queue-network-policy
+  namespace: fleetman
+spec:
+  podSelector:
+    matchLabels:
+      app: trucks-queue
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api-gateway
+    ports:
+    - protocol: TCP
+      port: 8161
+    - protocol: TCP
+      port: 61616
+  - from:
+    - podSelector:
+        matchLabels:
+          app: position-tracker
+    ports:
+    - protocol: TCP
+      port: 8161
+    - protocol: TCP
+      port: 61616
+  - from:
+    - podSelector:
+        matchLabels:
+          app: position-sim
+    ports:
+    - protocol: TCP
+      port: 8161
+    - protocol: TCP
+      port: 61616
+  egress:
+  - to:  # DNS resolution
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
