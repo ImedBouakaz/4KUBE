@@ -14,13 +14,34 @@ spec:
       labels:
         app: fleetman-position-tracker
     spec:
+      initContainers:
+        - name: wait-for-mongo
+          image: busybox
+          command: ['sh', '-c', 'until nc -z fleetman-mongodb 27017; do echo waiting for mongo; sleep 2; done;']
       containers:
         - env:
             - name: SPRING_PROFILES_ACTIVE
               value: production-microservice
+            - name: FLEETMAN_MONGODB_SERVICE_HOST
+              value: fleetman-mongodb
+            - name: FLEETMAN_MONGODB_SERVICE_PORT
+              value: "27017"
+
           image: supinfo4kube/position-tracker:1.0.1
           name: fleetman-position-tracker
           ports:
             - containerPort: 8080
-              protocol: TCP
-      restartPolicy: Always
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - nc -z fleetman-mongodb 27017
+            initialDelaySeconds: 5
+            periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
