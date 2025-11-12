@@ -62,7 +62,7 @@ EOF
     sudo cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
     sudo chown vagrant:vagrant /home/vagrant/.kube/config
     echo "end export config | Install Flannel"
-
+ 
 
     until kubectl get nodes >/dev/null 2>&1; do
     echo "  → API server not ready yet, waiting 10s..."

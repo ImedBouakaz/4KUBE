@@ -5,9 +5,10 @@ metadata:
     app: fleetman-webapp
   name: fleetman-webapp
 spec:
+  type: NodePort
   ports:
-    - name: "30080"
-      port: 30080
+    - port: 30080
       targetPort: 80
+      nodePort: 30080
   selector:
     app: fleetman-webapp
