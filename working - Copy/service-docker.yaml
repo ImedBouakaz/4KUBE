@@ -1,0 +1,125 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-queue
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-queue
+  ports:
+    - name: http
+      port: 8161
+      targetPort: 8161
+    - name: activemq
+      port: 61616
+      targetPort: 61616
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-mongodb
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-mongodb
+  ports:
+    - port: 27017
+      targetPort: 27017
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-position-tracker
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-position-tracker
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-api-gateway
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-api-gateway
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-web-app
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-web-app
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30080
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-api-gateway
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: fleetman-api-gateway.fleetman.svc.cluster.local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-mongodb
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: fleetman-mongodb.fleetman.svc.cluster.local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-position-tracker
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: fleetman-position-tracker.fleetman.svc.cluster.local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-queue
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: fleetman-queue.fleetman.svc.cluster.local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-web-app
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: fleetman-web-app.fleetman.svc.cluster.local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-position-simulator
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: fleetman-position-simulator.fleetman.svc.cluster.local
+

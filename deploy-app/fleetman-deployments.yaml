@@ -1,0 +1,152 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-queue
+  namespace: fleetman
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleetman-queue
+  template:
+    metadata:
+      labels:
+        app: fleetman-queue
+    spec:
+      containers:
+      - name: queue
+        image: supinfo4kube/queue:1.0.1
+        ports:
+        - containerPort: 8161
+        - containerPort: 61616
+      restartsPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-web-app
+  namespace: fleetman
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleetman-web-app
+  template:
+    metadata:
+      labels:
+        app: fleetman-web-app
+    spec:
+      containers:
+      - name: web-app
+        image: supinfo4kube/web-app:1.0.0
+        ports:
+        - containerPort: 80
+        env:
+          - name: API_GATEWAY_HOST
+            value: "fleetman-api-gateway"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-position-simulator
+  namespace: fleetman
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleetman-position-simulator
+  template:
+    metadata:
+      labels:
+        app: fleetman-position-simulator
+    spec:
+      containers:
+      - name: position-simulator
+        image: supinfo4kube/position-simulator:1.0.1
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "production-microservice"
+        - name: SPRING_ACTIVEMQ_BROKER_URL
+          value: "tcp://fleetman-queue:61616"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-position-tracker
+  namespace: fleetman
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleetman-position-tracker
+  template:
+    metadata:
+      labels:
+        app: fleetman-position-tracker
+    spec:
+      containers:
+      - name: position-tracker
+        image: supinfo4kube/position-tracker:1.0.1
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "production-microservice"
+        - name: SPRING_ACTIVEMQ_BROKER_URL
+          value: "tcp://fleetman-queue:61616"
+        - name: SPRING_DATA_MONGODB_HOST
+          value: "fleetman-mongodb"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-mongodb
+  namespace: fleetman
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleetman-mongodb
+  template:
+    metadata:
+      labels:
+        app: fleetman-mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:3.6.23
+        ports:
+        - containerPort: 27017
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-api-gateway
+  namespace: fleetman
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: fleetman-api-gateway
+  template:
+    metadata:
+      labels:
+        app: fleetman-api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: supinfo4kube/api-gateway:1.0.1
+        ports:
+        - containerPort: 8080
+        env:  
+        - name: SPRING_PROFILES_ACTIVE
+          value: "production-microservice"
+        - name: TRACKER_HOST
+          value: "fleetman-position-tracker"
